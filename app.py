@@ -60,5 +60,3 @@ def filtro():
         response=df.to_json(),
         mimetype='application/json',
         status=200)
-
-app.run()

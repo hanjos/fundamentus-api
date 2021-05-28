@@ -8,7 +8,7 @@ from flask import request, make_response
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
-API_KEY = os.environ("API_KEY")
+API_KEY = os.getenv("API_KEY")
 
 @app.route('/', methods=["GET"])
 def papel():

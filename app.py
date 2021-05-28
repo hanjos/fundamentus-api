@@ -1,3 +1,5 @@
+import os
+
 import fundamentus
 
 import flask
@@ -6,8 +8,16 @@ from flask import request, make_response
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
+API_KEY = os.environ("API_KEY")
+
 @app.route('/', methods=["GET"])
 def papel():
+    if 'x-api-key' not in request.headers:
+        return make_response('Error: missing API key', 403)
+
+    if request.headers['x-api-key'] != API_KEY:
+        return make_response('Error: unknown API key: "%s"' % request.headers['x-api-key'], 403)
+
     if 'papel' in request.args:
         ticker = request.args['papel']
     else:
@@ -54,6 +64,12 @@ def filter(df, filters):
 
 @app.route('/', methods=["POST"])
 def filtro():
+    if 'x-api-key' not in request.headers:
+        return make_response('Error: missing API key', 403)
+
+    if request.headers['x-api-key'] != API_KEY:
+        return make_response('Error: unknown API key: "%s"' % request.headers['x-api-key'], 403)
+
     df = filter(fundamentus.get_resultado(), request.form)
 
     return app.response_class(

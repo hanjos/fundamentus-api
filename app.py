@@ -70,7 +70,7 @@ def filtro():
     if request.headers['x-api-key'] != API_KEY:
         return make_response('Error: unknown API key: "%s"' % request.headers['x-api-key'], 403)
 
-    app.logger.debug('Payload: %s' % request.form)
+    app.logger.info('Payload: %s' % request.form)
     df = filter(fundamentus.get_resultado(), request.form)
 
     return app.response_class(
@@ -79,4 +79,4 @@ def filtro():
         status=200)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)

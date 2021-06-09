@@ -10,6 +10,7 @@ app.config["DEBUG"] = True
 
 API_KEY = os.getenv("API_KEY")
 
+
 @app.route('/', methods=["GET"])
 def papel():
     if 'x-api-key' not in request.headers:
@@ -19,14 +20,18 @@ def papel():
         return make_response('Error: unknown API key: "%s"' % request.headers['x-api-key'], 403)
 
     if 'papel' in request.args:
-        ticker = request.args['papel']
+        tickersCSV = request.args['papel']
     else:
-        return make_response('Error: ticker not found', 400)
+        return make_response('Error: tickers not found', 400)
+
+    tickers = tickersCSV.split(',')
+    app.logger.info(f'{tickersCSV} -> {tickers}')
 
     return app.response_class(
-        response=fundamentus.get_papel(ticker).to_json(),
+        response=fundamentus.get_papel(tickers).to_json(),
         mimetype='application/json',
         status=200)
+
 
 def filter_interval(df, filters, column, df_column=None):
     if not df_column:
@@ -34,10 +39,12 @@ def filter_interval(df, filters, column, df_column=None):
 
     if (column + '_min') in filters:
         df = df[df[df_column] >= float(filters[column + '_min'])]
+
     if (column + '_max') in filters:
         df = df[df[df_column] <= float(filters[column + '_max'])]
 
     return df
+
 
 def filter(df, filters):
     df = filter_interval(df, filters, 'pl')
@@ -62,6 +69,7 @@ def filter(df, filters):
 
     return df
 
+
 @app.route('/', methods=["POST"])
 def filtro():
     if 'x-api-key' not in request.headers:
@@ -77,6 +85,7 @@ def filtro():
         response=df.to_json(),
         mimetype='application/json',
         status=200)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

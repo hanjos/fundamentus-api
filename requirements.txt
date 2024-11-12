@@ -1,3 +1,4 @@
+BeautifulSoup4==4.9.3
 certifi==2020.12.5
 chardet==4.0.0
 click==8.0.1
@@ -17,6 +18,7 @@ pytz==2021.1
 requests==2.25.1
 requests-cache==0.6.3
 six==1.16.0
+soupsieve==2.3.2.post1
 tabulate==0.8.9
 url-normalize==1.4.3
 urllib3==1.26.5
